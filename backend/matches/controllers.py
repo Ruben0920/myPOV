@@ -6,16 +6,11 @@ def detect_objects(image_path):
 
     detected_objects = []
 
-    for result in results[0]:
-        for box in result.boxes:
-            # Extract box attributes, ensuring correct indexing
-            if len(box) >= 4:
-                for result in results[0]:
-                    detected_objects.append({
-                        'label': result['name'],
-                        'confidence': result['confidence'],
-                        'box': result['box']
+    for result in results:
+        boxes = result.boxes
+        for box in boxes:
+            detected_objects.append({
+                        'label': model.names[int(box.cls)],
                     })    
     return detected_objects
-
       

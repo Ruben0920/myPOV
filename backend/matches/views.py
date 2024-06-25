@@ -1,3 +1,4 @@
+from collections import defaultdict
 import os
 import tempfile
 import json
@@ -22,6 +23,17 @@ class ImageUploadView(APIView):
         
         temp_file_path = self.save_temp_file(file_obj)
         detected_objects = detect_objects(temp_file_path)
+        # Step 1: Initialize a dictionary to count the labels
+        label_count = defaultdict(int)
+
+        # Step 2: Iterate through the list of dictionaries
+        for item in detected_objects:
+            label = item["label"]
+            label_count[label] += 1
+
+        # Step 3: Transform the count dictionary into the desired format
+        detected_objects = [{"label": label, "count": count} for label, count in label_count.items()]
+            
         os.remove(temp_file_path)  # Clean up the temporary file
         
         return JsonResponse(detected_objects, safe=False)
