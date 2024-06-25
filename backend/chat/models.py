@@ -1,4 +1,4 @@
-from ast import Match
+from matches.models import Match
 from django.db import models
 from django.conf import settings
 
