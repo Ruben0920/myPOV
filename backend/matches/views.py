@@ -11,7 +11,7 @@ from .controllers import detect_objects  # Ensure this path is correct
 
 class ImageUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
-
+    
     def post(self, request, *args, **kwargs):
         if 'file' not in request.FILES:
             return JsonResponse({'error': 'No file part'}, status=400)

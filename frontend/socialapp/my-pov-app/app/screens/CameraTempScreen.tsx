@@ -1,11 +1,12 @@
 import React, { FC, useState, useEffect, useRef } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, Image, View, Pressable, StyleSheet } from "react-native"
+import { ViewStyle, Image, View, Pressable, StyleSheet, Alert } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen, Text } from "app/components"
 
 import { Camera, CameraPermissionStatus , PhotoFile, useCameraDevice, useCameraPermission,} from "react-native-vision-camera";
-
+import { Platform } from 'react-native';
+import * as FileSystem from 'expo-file-system'; // Import FileSystem from Expo for handling file operations
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
@@ -37,10 +38,32 @@ export const CameraTempScreen: FC<CameraTempScreenProps> = observer(function Cam
   //take pic --> call backend
   const TakePicture = async() =>{
     const image = await camera.current?.takePhoto();
+    
     setImage(image)
-    console.log(image);
-    const result = await fetch("file://$image.path");
+    
+    
+    
+
+    const result = await fetch(`file://${image.path}`);
+    
     const data = await result.blob();
+    
+    
+    const formData = new FormData();
+      formData.append('file', data, `file://${image.path}`);
+      
+      const uploadResponse = await fetch('localhost:8000/matches/get_post_objects/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log("check")
+      
+
+     
+
   }
 
 
@@ -55,7 +78,7 @@ export const CameraTempScreen: FC<CameraTempScreenProps> = observer(function Cam
         <>
         <Image source={{ uri: 'file://' + image.path}} style={StyleSheet.absoluteFill} />
         <Pressable 
-        onPress={ () => setImage(undefined)}
+        onPress={() => setImage(undefined)}
         style={{
         position:"absolute",
         alignSelf: "center",
