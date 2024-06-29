@@ -16,14 +16,13 @@ import { Reactotron } from "./ReactotronClient"
 
 const reactotron = Reactotron.configure({
   name: require("../../package.json").name,
-  host: "localhost",
   onConnect: () => {
     /** since this file gets hot reloaded, let's clear the past logs every time we connect */
     Reactotron.clear()
   },
 }).use(
   mst({
-    /** ignore some chatty `mobx-state-tree` actions  */
+    /* ignore some chatty `mobx-state-tree` actions */
     filter: (event) => /postProcessSnapshot|@APPLY_SNAPSHOT/.test(event.name) === false,
   }),
 )
@@ -110,7 +109,12 @@ reactotron.onCustomCommand({
  *
  * ```
  * if (__DEV__) {
- *  console.tron.log('here')
+ *  console.tron.display({
+ *    name: 'JOKE',
+ *    preview: 'What's the best thing about Switzerland?',
+ *    value: 'I don't know, but the flag is a big plus!',
+ *    important: true
+ *  })
  * }
  * ```
  *
@@ -129,11 +133,8 @@ declare global {
     /**
      * Reactotron client for logging, displaying, measuring performance, and more.
      * @see https://github.com/infinitered/reactotron
-     *
      * @example
      * if (__DEV__) {
-     *  console.tron.log("here")
-     *
      *  console.tron.display({
      *    name: 'JOKE',
      *    preview: 'What's the best thing about Switzerland?',
@@ -141,41 +142,9 @@ declare global {
      *    important: true
      *  })
      * }
-     *
      */
     tron: typeof reactotron
   }
-}
-
-/**
- * For our last trick, we are going to monkey patching console to also output to Reactotron.
- */
-const ogConsoleLog = console.log
-console.log = (...args: Parameters<typeof console.log>) => {
-  ogConsoleLog(...args)
-  reactotron.log(...args)
-}
-
-const ogConsoleWarn = console.warn
-console.warn = (...args: Parameters<typeof console.warn>) => {
-  ogConsoleWarn(...args)
-  reactotron.warn(args[0])
-}
-
-const ogConsoleError = console.error
-console.error = (...args: Parameters<typeof console.error>) => {
-  ogConsoleError(...args)
-  if (args[0] instanceof Error) {
-    reactotron.error(args[0].message, args[0].stack)
-  } else {
-    reactotron.error(args[0], args[1])
-  }
-}
-
-const ogConsoleDebug = console.debug
-console.debug = (...args: Parameters<typeof console.debug>) => {
-  ogConsoleDebug(...args)
-  reactotron.debug(args[0])
 }
 
 /**

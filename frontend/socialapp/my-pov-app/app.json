@@ -65,13 +65,25 @@
             "newArchEnabled": false
           }
         }
-      ]
+      ],
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
+  
+          
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
+        }
+      ],
+      "expo-font"
+      
     ],
     "experiments": {
       "tsconfigPaths": true
     }
   },
   "ignite": {
-    "version": "9.0.2-alpha.1"
+    "version": "9.7.1"
   }
 }

@@ -8,7 +8,6 @@ import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer,
-  NavigatorScreenParams,
 } from "@react-navigation/native"
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
@@ -16,10 +15,12 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import * as Screens from "app/screens"
 import Config from "../config"
-import { useStores } from "../models"
-import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
+
+//custom 
+import Icon from "react-native-vector-icons/FontAwesome5"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -36,11 +37,12 @@ import { colors } from "app/theme"
  */
 export type AppStackParamList = {
   Welcome: undefined
-  Login: undefined
-  Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  CameraTemp: undefined
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
+//tab navigator
+const Tab = createBottomTabNavigator<AppStackParamList>()
 
 /**
  * This is a list of all the route names that will exit the app if the back button
@@ -52,35 +54,42 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
   AppStackParamList,
   T
 >
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
-  const {
-    authenticationStore: { isAuthenticated },
-  } = useStores()
-
   return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false, navigationBarColor: colors.background }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Login"}
-    >
-      {isAuthenticated ? (
-        <>
-          <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
+    <Tab.Navigator
+      screenOptions={{
+      headerShown:false,
+      tabBarShowLabel:false,
+      tabBarStyle:{height:50},
+      tabBarActiveTintColor: '#e91e63',
+      lazy:false
+    }}
+    initialRouteName="Welcome">
 
-          <Stack.Screen name="Demo" component={DemoNavigator} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Login" component={Screens.LoginScreen} />
-        </>
-      )}
+        <Tab.Screen
+        name="Welcome"
+        component={Screens.WelcomeScreen}
+        options={{
+          tabBarIcon: ({color, size}) => <Icon name="home" size={size} color={color} />,
+          title: "Home",
+        }}
+      />
+      
+        <Tab.Screen
+        name="CameraTemp"
+        component={Screens.CameraTempScreen}
+        options={{
+          tabBarIcon: ({color, size}) => <Icon name="camera" size={size} color={color}  />,
+          title: "Camera",
+        }}
+      />
 
-      {/** 🔥 Your screens go here */}
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
-    </Stack.Navigator>
+    </Tab.Navigator>
+
   )
 })
 

@@ -48,8 +48,9 @@ interface IconProps extends TouchableOpacityProps {
 /**
  * A component to render a registered icon.
  * It is wrapped in a <TouchableOpacity /> if `onPress` is provided, otherwise a <View />.
- *
- * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-Icon.md)
+ * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/components/Icon/}
+ * @param {IconProps} props - The props for the `Icon` component.
+ * @returns {JSX.Element} The rendered `Icon` component.
  */
 export function Icon(props: IconProps) {
   const {
@@ -90,21 +91,12 @@ export const iconRegistry = {
   caretLeft: require("../../assets/icons/caretLeft.png"),
   caretRight: require("../../assets/icons/caretRight.png"),
   check: require("../../assets/icons/check.png"),
-  clap: require("../../assets/icons/demo/clap.png"),
-  community: require("../../assets/icons/demo/community.png"),
-  components: require("../../assets/icons/demo/components.png"),
-  debug: require("../../assets/icons/demo/debug.png"),
-  github: require("../../assets/icons/demo/github.png"),
-  heart: require("../../assets/icons/demo/heart.png"),
   hidden: require("../../assets/icons/hidden.png"),
   ladybug: require("../../assets/icons/ladybug.png"),
   lock: require("../../assets/icons/lock.png"),
   menu: require("../../assets/icons/menu.png"),
   more: require("../../assets/icons/more.png"),
-  pin: require("../../assets/icons/demo/pin.png"),
-  podcast: require("../../assets/icons/demo/podcast.png"),
   settings: require("../../assets/icons/settings.png"),
-  slack: require("../../assets/icons/demo/slack.png"),
   view: require("../../assets/icons/view.png"),
   x: require("../../assets/icons/x.png"),
 }

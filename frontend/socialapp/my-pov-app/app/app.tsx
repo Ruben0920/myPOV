@@ -11,9 +11,9 @@
  * if you're interested in adding screens and navigators.
  */
 if (__DEV__) {
-  // Load Reactotron configuration in development. We don't want to
-  // include this in our production bundle, so we are using `if (__DEV__)`
-  // to only execute this in development.
+  // Load Reactotron in development only.
+  // Note that you must be using metro's `inlineRequires` for this to work.
+  // If you turn it off in metro.config.js, you'll have to manually import it.
   require("./devtools/ReactotronConfig.ts")
 }
 import "./i18n"
@@ -60,6 +60,8 @@ interface AppProps {
 
 /**
  * This is the root component of our app.
+ * @param {AppProps} props - The props for the `App` component.
+ * @returns {JSX.Element} The rendered `App` component.
  */
 function App(props: AppProps) {
   const { hideSplashScreen } = props
@@ -69,7 +71,7 @@ function App(props: AppProps) {
     isRestored: isNavigationStateRestored,
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY)
 
-  const [areFontsLoaded] = useFonts(customFontsToLoad)
+  const [areFontsLoaded, fontLoadError] = useFonts(customFontsToLoad)
 
   const { rehydrated } = useInitialRootStore(() => {
     // This runs after the root store has been initialized and rehydrated.
@@ -87,7 +89,9 @@ function App(props: AppProps) {
   // In iOS: application:didFinishLaunchingWithOptions:
   // In Android: https://stackoverflow.com/a/45838109/204044
   // You can replace with your own loading component if you wish.
-  if (!rehydrated || !isNavigationStateRestored || !areFontsLoaded) return null
+  if (!rehydrated || !isNavigationStateRestored || (!areFontsLoaded && !fontLoadError)) {
+    return null
+  }
 
   const linking = {
     prefixes: [prefix],
