@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen, Text, Button } from "app/components"
+import { deleteData } from "app/utils/storage/securestore"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -10,17 +11,23 @@ interface HomeScreenProps extends AppStackScreenProps<"Home"> {}
 
 export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({
   navigation,
-}) {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+}) { 
+  const handleDeleteTokens = () =>{
+    deleteData("accessToken")
+    deleteData("refreshToken")
+    navigation.navigate("Login")
+  }
+  
 
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
   return (
     <Screen style={$root} preset="scroll">
       <Button 
           text="Camera" 
           onPress={() => navigation.navigate("CameraTemp")} 
+          />
+      <Button 
+          text="LogOut" 
+          onPress={handleDeleteTokens}
           />
     </Screen>
   )

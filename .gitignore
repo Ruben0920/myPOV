@@ -175,3 +175,7 @@ fastlane/readme.md
 *.xcworkspace
 xcuserdata/
 *.xcodeproj
+
+# Env files
+.env
+frontend/socialapp/my-pov-app/app/utils/storage/SessionStorage.ts

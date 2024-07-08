@@ -101,26 +101,26 @@ export const AppNavigator = observer(function AppNavigator(
   props: NavigationProps
 ) {
   const colorScheme = useColorScheme();
-
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName));
+  
 
-  return (
+  return (  
     <NavigationContainer
       ref={navigationRef}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
       {...props}
     >
-      <Stack.Navigator initialRouteName="Welcome">
-        <Stack.Screen
-          name="Welcome"
-          component={AuthNavigator}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={MainNavigator}
-          options={{ headerShown: false }}
-        />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >   
+          <>
+            <Stack.Screen name="Home" component={MainNavigator} />
+          </>
+        
+          <Stack.Screen name="Login" component={AuthNavigator} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
