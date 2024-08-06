@@ -13,7 +13,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
    useEffect(() => {
      const timer = setTimeout(() => {
        navigation.navigate('Login');
-    }, 3000); // 3 seconds delay before navigating to the login screen
+    }, 1500); // 3 seconds delay before navigating to the login screen
 
    return () => clearTimeout(timer);
    }, []);
@@ -32,7 +32,8 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     ).start();
   }, []);
 
-  return (  <View style={styles.container}>
+  return (  
+  <View style={styles.container}>
     <Animated.View
       style={[
         styles.logoContainer,
@@ -53,10 +54,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
     </Animated.View>
   </View>
 );
-
-
-
-
 
 });
 
@@ -90,4 +87,3 @@ const styles = StyleSheet.create({
     left: 0,
   },
 });
-
