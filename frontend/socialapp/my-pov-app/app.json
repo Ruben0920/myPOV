@@ -60,6 +60,7 @@
     },
     "plugins": [
       "expo-localization",
+      "expo-secure-store",
       [
         "expo-build-properties",
         {
@@ -81,6 +82,7 @@
           "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
         }
       ],
+
       "expo-font"
       
     ],
