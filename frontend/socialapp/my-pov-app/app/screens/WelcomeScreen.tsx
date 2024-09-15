@@ -1,89 +1,83 @@
-import { observer } from "mobx-react-lite";
-import React, { FC, useEffect } from "react";
-import { AppStackScreenProps } from "../navigators";
-import  {useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import { observer } from "mobx-react-lite"
+import React, { FC } from "react"
+import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import {
+  Text,
+} from "app/components"
+import { isRTL } from "../i18n"
+import { AppStackScreenProps } from "../navigators"
+import { colors, spacing } from "../theme"
+import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 
-interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {};
+const welcomeLogo = require("../../assets/images/logo.png")
+const welcomeFace = require("../../assets/images/welcome-face.png")
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen({
-  navigation,
-}) { 
+interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
 
-   useEffect(() => {
-     const timer = setTimeout(() => {
-       navigation.navigate('Login');
-    }, 1500); // 3 seconds delay before navigating to the login screen
+export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(
+) {
 
-   return () => clearTimeout(timer);
-   }, []);
+  const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-  const rotation = useRef(new Animated.Value(0)).current;
+  return (
+    <View style={$container}>
+      <View style={$topContainer}>
+        <Image style={$welcomeLogo} source={welcomeLogo} resizeMode="contain" />
+        <Text
+          testID="welcome-heading"
+          style={$welcomeHeading}
+          tx="welcomeScreen.readyForLaunch"
+          preset="heading"
+        />
+        <Text tx="welcomeScreen.exciting" preset="subheading" />
+        <Image style={$welcomeFace} source={welcomeFace} resizeMode="contain" />
+      </View>
 
-  useEffect(() => {
-    // Start rotating animation
-    Animated.loop(
-      Animated.timing(rotation, {
-        toValue: 2,
-        duration: 5000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    ).start();
-  }, []);
+      <View style={[$bottomContainer, $bottomContainerInsets]}>
+        <Text tx="welcomeScreen.postscript" size="md" />
+      </View>
+    </View>
+  )
+})
 
-  return (  
-  <View style={styles.container}>
-    <Animated.View
-      style={[
-        styles.logoContainer,
-        {
-          transform: [
-            {
-              rotateY: rotation.interpolate({
-                inputRange: [0, 1],
-                outputRange: ['0deg', '360deg'],
-              }),
-            },
-          ],
-        },
-      ]}
-    >
-      <Text style={styles.logoText}>POV</Text>
-      <Animated.View style={styles.sparkle}></Animated.View>
-    </Animated.View>
-  </View>
-);
+const $container: ViewStyle = {
+  flex: 1,
+  backgroundColor: colors.background,
+}
 
-});
+const $topContainer: ViewStyle = {
+  flexShrink: 1,
+  flexGrow: 1,
+  flexBasis: "57%",
+  justifyContent: "center",
+  paddingHorizontal: spacing.lg,
+}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-  },
-  logoContainer: {
-    width: 300,
-    height: 300,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#800080',
-    borderRadius: 150, // Half of the width/height for a perfect circle
-  },
-  logoText: {
-    color: '#FFF',
-    fontSize: 80, // Increase the font size for a larger logo
-    fontWeight: 'bold',
-  },
-  sparkle: {
-    position: 'absolute',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Sparkling color
-    width: 10, // Width of the sparkles
-    height: 10,
-    borderRadius: 5,
-    top: 0,
-    left: 0,
-  },
-});
+const $bottomContainer: ViewStyle = {
+  flexShrink: 1,
+  flexGrow: 0,
+  flexBasis: "43%",
+  backgroundColor: colors.palette.neutral100,
+  borderTopLeftRadius: 16,
+  borderTopRightRadius: 16,
+  paddingHorizontal: spacing.lg,
+  justifyContent: "space-around",
+}
+const $welcomeLogo: ImageStyle = {
+  height: 88,
+  width: "100%",
+  marginBottom: spacing.xxl,
+}
+
+const $welcomeFace: ImageStyle = {
+  height: 169,
+  width: 269,
+  position: "absolute",
+  bottom: -47,
+  right: -80,
+  transform: [{ scaleX: isRTL ? -1 : 1 }],
+}
+
+const $welcomeHeading: TextStyle = {
+  marginBottom: spacing.md,
+}

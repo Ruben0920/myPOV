@@ -10,7 +10,7 @@ import { useAuth } from "app/services/auth/useAuth"
 import { AppStyles } from "app/theme/AppStyles"
 import { Picker } from "@react-native-picker/picker"
 
-const logo = require("../../assets/images/LogoTemp.png")
+const logo = require("../../assets/images/welcome-face.png")
 interface SignUpScreenProps extends AppStackScreenProps<"SignUp"> {}
 
 export const SignUpScreen: FC<SignUpScreenProps> = observer(function SignUpScreen({ navigation }) {

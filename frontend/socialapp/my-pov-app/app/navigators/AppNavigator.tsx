@@ -36,39 +36,9 @@ import { useAuth } from "app/services/auth/useAuth";
  */
 export type AppStackParamList = {
   // * Initial
-  Welcome: undefined
-  Login: undefined
-  SignUp: undefined
-  ForgotPassword: undefined
-  ResetPassword: undefined
-  OneTimePassword: undefined
-
-  // * Logged In
-
-  //! Main
-  MainFeed: undefined
-  MainChat: undefined
-  MainFriendlist: undefined
-  MainAccount: undefined
-
-  //! Alter
-  AlterFeed: undefined
-  AlterChat: undefined
-  AlterFriendlist: undefined
-  AlterAccount: undefined
-
-  //! Common
-  Camera: undefined
-  PhotoEditing: undefined
-  PostCreation: undefined
-
-  //! Debug / Deprecated
-  Home: undefined
-  CameraTemp: undefined
-  Pillars: undefined
-  InitialAccountSetup: undefined
-  InitialScreenTemp: undefined
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  Login: undefined;
+  SignUp: undefined;
+  Home: undefined;
 };
 
 /**
@@ -83,46 +53,6 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> =
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
-const AuthNavigator = () => {
-  return (
-    <Stack.Navigator initialRouteName="Welcome">
-      <Stack.Screen
-        name="Welcome"
-        component={Screens.WelcomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Login"
-        component={Screens.LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SignUp"
-        component={Screens.SignUpScreen}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const MainNavigator = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={Screens.HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="CameraTemp"
-        component={Screens.CameraTempScreen}
-        options={{ headerShown: false }}
-      />
-      {/* Add other main screens here */}
-    </Stack.Navigator>
-  );
-};
-
 export interface NavigationProps
   extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
 
@@ -131,9 +61,8 @@ export const AppNavigator = observer(function AppNavigator(
 ) {
   const colorScheme = useColorScheme();
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName));
-  
 
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn } = useAuth();
 
   return (
     <NavigationContainer
@@ -146,38 +75,16 @@ export const AppNavigator = observer(function AppNavigator(
           headerShown: false,
         }}
       >
-        {isLoggedIn?(
+        {isLoggedIn ? (
           <>
-            <Stack.Screen name="MainFeed" component={Screens.MainFeedScreen} />
-            <Stack.Screen name="Pillars" component={Screens.PillarsScreen} />
             <Stack.Screen name="Home" component={Screens.HomeScreen} />
-            <Stack.Screen name="MainChat" component={Screens.MainChatScreen} />
-            <Stack.Screen name="MainFriendlist" component={Screens.MainFriendlistScreen} />
-            <Stack.Screen name="MainAccount" component={Screens.MainAccountScreen} />
-
-            <Stack.Screen name="AlterFeed" component={Screens.AlterFeedScreen} />
-            <Stack.Screen name="AlterChat" component={Screens.AlterChatScreen} />
-            <Stack.Screen name="AlterFriendlist" component={Screens.AlterFriendlistScreen} />
-            <Stack.Screen name="AlterAccount" component={Screens.AlterAccountScreen} />
-
-            <Stack.Screen name="Camera" component={Screens.CameraScreen} />
-            <Stack.Screen name="PhotoEditing" component={Screens.PhotoEditingScreen} />
-            <Stack.Screen name="PostCreation" component={Screens.PostCreationScreen} />
           </>
-        ):(
+        ) : (
           <>
-          <Stack.Screen name="Login" component={Screens.LoginScreen} />
-          <Stack.Screen name="SignUp" component={Screens.SignUpScreen} />
-          <Stack.Screen name="ForgotPassword" component={Screens.ForgotPasswordScreen} />
-          <Stack.Screen name="OneTimePassword" component={Screens.OneTimePasswordScreen} />
-          <Stack.Screen name="ResetPassword" component={Screens.ResetPasswordScreen} />
-        </>
-
-        )}   
-          
-        
-          
-        
+            <Stack.Screen name="Login" component={Screens.LoginScreen} />
+            <Stack.Screen name="SignUp" component={Screens.SignUpScreen} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

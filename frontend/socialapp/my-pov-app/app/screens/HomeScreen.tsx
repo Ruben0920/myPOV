@@ -8,17 +8,23 @@ import { useAuth } from "app/services/auth/useAuth"
 import { AppStyles } from "app/theme/AppStyles"
 import { Drawer } from "react-native-drawer-layout"
 import { spacing } from "../theme"
-import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5"
 
-const UserIcon = require("../../assets/images/iconplaceholder.webp")
+const UserIcon = require("../../assets/images/welcome-face.png")
 interface HomeScreenProps extends AppStackScreenProps<"Home"> {}
 
 export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ navigation }) {
   const [open, setOpen] = useState(false)
-  const { loggedIn } = useAuth()
-  const handleDeleteTokens = () => {
-    AuthService.logout()
-    loggedIn()
+  const { loggedOut } = useAuth()
+  const LogOut = () => {
+    try {
+      AuthService.logout()
+        .then(loggedOut)
+        .catch((error) => {
+          throw new Error(error)
+        })
+    } catch (error: any) {
+      console.log("Error logging out :", error)
+    }
   }
 
   const toggleDrawer = () => {
@@ -39,27 +45,10 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
       renderDrawerContent={() => {
         return (
           <View style={AppStyles.Drawer}>
-            <TouchableOpacity onPress={() => navigation.navigate("InitialAccountSetup")}>
-              <Image
-                style={[
-                  AppStyles.UserIcon,
-                  { height: 150, width: 150, borderRadius: 75, alignSelf: "center", top: 0 },
-                ]}
-                source={UserIcon}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-            <Button
-              text="Testing"
-              textStyle={[AppStyles.ButtonText, { fontSize: 32 }]}
-              onPress={() => navigation.navigate("Pillars")}
-              style={[AppStyles.MainButton, { paddingHorizontal: spacing.xxl }]}
-              pressedStyle={[AppStyles.MainButton, { paddingHorizontal: spacing.xxl }]}
-            />
             <Button
               text="LogOut"
               textStyle={[AppStyles.ButtonText, { fontSize: 42, color: "#242038" }]}
-              onPress={handleDeleteTokens}
+              onPress={LogOut}
               style={[
                 [AppStyles.MainButton, { paddingHorizontal: spacing.xxl }],
                 {
@@ -96,25 +85,6 @@ export const HomeScreen: FC<HomeScreenProps> = observer(function HomeScreen({ na
             />
           )}
         </TouchableOpacity>
-        <View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Camera")}
-            style={{
-              position: "absolute",
-              width: 200,
-              height: 200,
-              borderRadius: 125,
-              alignSelf: "center",
-              top: 1375,
-            }}
-          >
-            <FontAwesome5Icon
-              name={!open ? "camera" : "facebook"}
-              size={200}
-              color={"rgba(25, 16, 21, 1)"}
-            />
-          </TouchableOpacity>
-        </View>
       </Screen>
     </Drawer>
   )

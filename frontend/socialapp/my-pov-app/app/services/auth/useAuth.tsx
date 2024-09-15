@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useState, PropsWithChildren } from "react"
+import React, { createContext, useContext, useState, useEffect, PropsWithChildren } from "react"
 import { loadData } from "app/utils/storage/securestore"
-import { useEffect } from "react"
 
 type AuthState = {
   isLoggedIn: boolean
+  loggedIn: () => any
+  loggedOut: () => any
   token: string | null
 }
 
@@ -36,17 +37,17 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      await loadData("accessToken").then(setToken)
+      await loadData("refreshToken").then(setToken)
     }
     initializeAuth()
   }, [])
 
   const loggedIn = async () => {
     await loadData("refreshToken").then(setToken)
-    // !need to check for refreshkeyexpiry
   }
-  const loggedOut = () => {
-    setToken(null)
+
+  const loggedOut = async () => {
+    await setToken(null)
   }
 
   return (

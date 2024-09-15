@@ -1,5 +1,4 @@
-import { jwtDecode } from "jwt-decode"
-import { saveData, loadData, deleteData } from "app/utils/storage/securestore"
+import { saveData, deleteData } from "app/utils/storage/securestore"
 
 const API_URL = "http://10.0.2.2:8000/users" // Backend API URL
 const login = async (userData: {}) => {
@@ -11,17 +10,20 @@ const login = async (userData: {}) => {
       },
       body: JSON.stringify(userData),
     })
-
     const jsonData = await response.json()
     if (!response.ok) {
       throw new Error(jsonData.error)
     }
-    saveData("accessToken", jsonData.access)
-    saveData("refreshToken", jsonData.refresh)
-    Promise.resolve()
+    saveData("accessToken", jsonData.access).catch((error) => {
+      throw new Error(error)
+    })
+    saveData("refreshToken", jsonData.refresh).catch((error) => {
+      throw new Error(error)
+    })
+    return Promise.resolve()
   } catch (error: any) {
     console.log("Error fetching data:", error.message)
-    Promise.reject(error)
+    return Promise.reject(error.message)
   }
 }
 
@@ -38,31 +40,39 @@ const register = async (userData: {}) => {
     if (!response.ok) {
       throw new Error(jsonData.error)
     }
-
-    saveData("accessToken", jsonData.access)
-    saveData("refreshToken", jsonData.refresh)
-    Promise.resolve()
+    saveData("accessToken", jsonData.access).catch((error) => {
+      throw new Error(error)
+    })
+    saveData("refreshToken", jsonData.refresh).catch((error) => {
+      throw new Error(error)
+    })
+    return Promise.resolve()
   } catch (error: any) {
     console.log("Error fetching data:", error.message)
-    Promise.reject(error)
+    return Promise.reject(error)
   }
 }
 
 const logout = async () => {
   try {
-    await deleteData("accessToken")
-    await deleteData("refreshToken")
-    Promise.resolve("LoggedOut")
+    await deleteData("accessToken").catch((error) => {
+      throw new Error(error)
+    })
+    await deleteData("refreshToken").catch((error) => {
+      throw new Error(error)
+    })
+    return Promise.resolve()
   } catch (error) {
-    Promise.reject(error)
+    return Promise.reject(error)
   }
 }
-//need to finish function
+// need to finish function
 // const refreshToken = async () => {
+
 //   const refreshToken = loadData("refreshToken")
 //   if (refreshToken) {
 //     try {
-//       //fectch from backend refrsh token
+//       fectch from backend refrsh token
 //       if (data.access && data.refreshToken) {
 //         saveData("accessToken", data.access)
 //         saveData("refreshToken", data.refresh)
@@ -77,22 +87,10 @@ const logout = async () => {
 // const checkTokenExpiry = async () => {
 //   const token = await loadData("accessToken")
 //   if (token) {
-//     try {
-//       const decoded = jwtDecode(token)
-//       const currentTime = Date.now() / 1000
-//       if (decoded.exp !== undefined && decoded.exp < currentTime) {
-//         await refreshToken()
-//           .then((data) => {
-//             console.log(data)
-//           })
-//           .catch((error) => {
-//             throw new Error(error)
-//           })
-//       } else {
-//         throw new Error("Decoded Exp is undefined")
-//       }
-//     } catch (error) {
-//       console.log(error)
+//     const decoded = jwtDecode(token)
+//     const currentTime = Date.now() / 1000
+//     if (decoded.exp < currentTime) {
+//       await refreshToken()
 //     }
 //   }
 // }
@@ -101,6 +99,4 @@ export default {
   login,
   register,
   logout,
-  // refreshToken,
-  // checkTokenExpiry,
 }
