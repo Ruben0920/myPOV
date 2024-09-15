@@ -1,4 +1,3 @@
-import "./gesture-handler"
 import "@expo/metro-runtime"
 import React from "react"
 import * as SplashScreen from "expo-splash-screen"

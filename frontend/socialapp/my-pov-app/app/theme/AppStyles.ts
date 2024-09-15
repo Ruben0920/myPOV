@@ -1,5 +1,5 @@
 import { ViewStyle, ImageStyle, TextStyle, StyleSheet } from "react-native"
-import { spacing } from "../theme"
+import { spacing } from "."
 
 const textStyles = {
   default: {
