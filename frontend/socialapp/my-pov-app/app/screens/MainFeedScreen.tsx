@@ -20,10 +20,17 @@ export const MainFeedScreen: FC<MainFeedScreenProps> = observer(function MainFee
 }) {
   const [openModal, setOpenModal] = useState(false)
   const [open, setOpen] = useState(false)
-  const { loggedIn } = useAuth()
-  const handleDeleteTokens = () => {
-    AuthService.logout()
-    loggedIn()
+  const { loggedOut } = useAuth()
+  const handleLogOut = async () => {
+    try {
+      await AuthService.logout()
+        .then(loggedOut())
+        .catch((error) => {
+          throw new Error(error)
+        })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const toggleDrawer = () => {
@@ -103,9 +110,9 @@ export const MainFeedScreen: FC<MainFeedScreenProps> = observer(function MainFee
               />
             </TouchableOpacity>
             <Button
-              text="Chat"
+              text="HomeOld"
               textStyle={[AppStyles.ButtonText, { fontSize: 32 }]}
-              onPress={() => navigation.navigate("MainChat")}
+              onPress={() => navigation.navigate("Home")}
               style={[AppStyles.MainButton, { paddingHorizontal: spacing.xxl }]}
               pressedStyle={[AppStyles.MainButton, { paddingHorizontal: spacing.xxl }]}
             />
@@ -117,9 +124,16 @@ export const MainFeedScreen: FC<MainFeedScreenProps> = observer(function MainFee
               pressedStyle={[AppStyles.MainButton, { paddingHorizontal: spacing.xxl }]}
             />
             <Button
+              text="InitialScreenTemp"
+              textStyle={[AppStyles.ButtonText, { fontSize: 32 }]}
+              onPress={() => navigation.navigate("InitialScreenTemp")}
+              style={[AppStyles.MainButton, { paddingHorizontal: spacing.xxl }]}
+              pressedStyle={[AppStyles.MainButton, { paddingHorizontal: spacing.xxl }]}
+            />
+            <Button
               text="LogOut"
               textStyle={[AppStyles.ButtonText, { fontSize: 42, color: "#242038" }]}
-              onPress={handleDeleteTokens}
+              onPress={handleLogOut}
               style={[
                 [AppStyles.MainButton, { paddingHorizontal: spacing.xxl }],
                 {

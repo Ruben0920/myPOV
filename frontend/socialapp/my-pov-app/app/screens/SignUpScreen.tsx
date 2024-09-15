@@ -76,13 +76,13 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(function SignUpScree
         password: hashedPassword,
       }
       try {
-        const response = await AuthService.register(userData)
-        if (response.error) {
-          console.log(response.error)
-          throw new Error(response.error)
-        }
-        loggedIn()
-        //navigation.navigate("Home");
+        await AuthService.register(userData)
+          .then((Status) => {
+            console.log(Status), loggedIn()
+          })
+          .catch((error) => {
+            throw new Error(error)
+          })
       } catch (error: any) {
         setUserError(true)
         setUsernameError(error.message)

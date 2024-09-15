@@ -60,6 +60,7 @@ export type AppStackParamList = {
   CameraTemp: undefined
   Pillars: undefined
   InitialAccountSetup: undefined
+  InitialScreenTemp: undefined
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -85,6 +86,7 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
   const { isLoggedIn } = useAuth()
+  // const isLoggedIn = true
 
   return (
     <NavigationContainer
@@ -96,6 +98,8 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
         {isLoggedIn ? (
           <>
             <Stack.Screen name="MainFeed" component={Screens.MainFeedScreen} />
+            <Stack.Screen name="Pillars" component={Screens.PillarsScreen} />
+            <Stack.Screen name="Home" component={Screens.HomeScreen} />
             <Stack.Screen name="MainChat" component={Screens.MainChatScreen} />
             <Stack.Screen name="MainFriendlist" component={Screens.MainFriendlistScreen} />
             <Stack.Screen name="MainAccount" component={Screens.MainAccountScreen} />

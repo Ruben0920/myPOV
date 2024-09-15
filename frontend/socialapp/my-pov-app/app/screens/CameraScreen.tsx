@@ -3,17 +3,12 @@ import { observer } from "mobx-react-lite"
 import { Image, TouchableOpacity, View, StyleSheet } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen, Text } from "app/components"
-import {
-  Camera,
-  CameraPermissionStatus,
-  PhotoFile,
-  useCameraDevice,
-  useCameraPermission,
-} from "react-native-vision-camera"
+import { Camera, PhotoFile, useCameraDevice } from "react-native-vision-camera"
 import { AppStyles } from "app/theme/AppStyles"
 import FontAwesome5Icon from "react-native-vector-icons/FontAwesome5"
 import { PermissionsAndroid, Platform } from "react-native"
 import cameraRoll from "app/utils/Album/cameraRoll"
+import { usePermission } from "app/services/permissions/android/useAndroidPermissions"
 
 interface CameraScreenProps extends AppStackScreenProps<"Camera"> {}
 
@@ -21,69 +16,56 @@ export const CameraScreen: FC<CameraScreenProps> = observer(function CameraScree
   const camera = useRef<Camera>(null)
   const device = useCameraDevice("back")
   const [image, setImage] = useState<PhotoFile>()
-  const { hasPermission, requestPermission } = useCameraPermission()
+  const [hasPermission, setHasPermission] = useState<boolean>(false)
+  const storagePermission = usePermission(
+    Platform.Version >= "33"
+      ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+      : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+  )
+  const cameraPermission = usePermission(PermissionsAndroid.PERMISSIONS.CAMERA)
 
   useEffect(() => {
-    if (!hasPermission) {
-      requestPermission()
+    const checkPermissions = async () => {
+      var status = true
+      await cameraPermission.checkPermission().then(async (permStatus) => {
+        if (!permStatus) {
+          await cameraPermission.requestPermission().then((permStatus) => {
+            console.log(status)
+            if (status) {
+              console.log(permStatus)
+              status = permStatus
+            }
+          })
+        }
+      })
+      await storagePermission.checkPermission().then(async (permStatus) => {
+        if (!permStatus) {
+          await storagePermission.requestPermission().then((permStatus) => {
+            console.log(status)
+            if (status) {
+              status = permStatus
+            }
+          })
+        }
+      })
+      console.log(status)
+      setHasPermission(status)
     }
-  }, [hasPermission])
-
-  if (!hasPermission) return <Text>Denied</Text>
-  if (device == null) return <Text>No Camera Found</Text>
+    checkPermissions()
+  }, [])
 
   const TakePicture = async () => {
     await camera.current?.takePhoto().then(setImage)
   }
 
-  async function hasAndroidPermission() {
-    const getCheckPermissionPromise = () => {
-      if (Platform.Version >= "33") {
-        return Promise.all([
-          PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES),
-          PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO),
-        ]).then(
-          ([hasReadMediaImagesPermission, hasReadMediaVideoPermission]) =>
-            hasReadMediaImagesPermission && hasReadMediaVideoPermission,
-        )
-      } else {
-        return PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE)
-      }
-    }
-
-    const hasPermission = await getCheckPermissionPromise()
-    if (hasPermission) {
-      return true
-    }
-    const getRequestPermissionPromise = () => {
-      if (Platform.Version >= "33") {
-        return PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-        ]).then(
-          (statuses) =>
-            statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES] ===
-              PermissionsAndroid.RESULTS.GRANTED &&
-            statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO] ===
-              PermissionsAndroid.RESULTS.GRANTED,
-        )
-      } else {
-        return PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        ).then((status) => status === PermissionsAndroid.RESULTS.GRANTED)
-      }
-    }
-
-    return await getRequestPermissionPromise()
-  }
-
   async function savePicture(tag: string, album: string) {
-    if (Platform.OS === "android" && !(await hasAndroidPermission())) {
-      return
+    if (hasPermission) {
+      await cameraRoll.Save(tag)
+      navigation.goBack()
+      setImage(undefined)
+    } else {
+      console.log("Storage permission denied")
     }
-    await cameraRoll.Save(tag)
-    navigation.goBack()
-    setImage(undefined)
   }
 
   return (
@@ -112,7 +94,7 @@ export const CameraScreen: FC<CameraScreenProps> = observer(function CameraScree
             <FontAwesome5Icon name={"times-circle"} size={80} color={"rgba(25, 16, 21, 0.7)"} />
           </TouchableOpacity>
         </>
-      ) : (
+      ) : hasPermission ? (
         <View style={AppStyles.CameraContainer}>
           <Camera
             ref={camera}
@@ -129,6 +111,8 @@ export const CameraScreen: FC<CameraScreenProps> = observer(function CameraScree
             <FontAwesome5Icon name={"times-circle"} size={80} color={"rgba(25, 16, 21, 0.7)"} />
           </TouchableOpacity>
         </View>
+      ) : (
+        <View style={AppStyles.container}></View>
       )}
     </Screen>
   )

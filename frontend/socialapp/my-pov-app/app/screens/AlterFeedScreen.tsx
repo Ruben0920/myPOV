@@ -19,10 +19,18 @@ export const AlterFeedScreen: FC<AlterFeedScreenProps> = observer(function Alter
   navigation,
 }) {
   const [open, setOpen] = useState(false)
-  const { loggedIn } = useAuth()
-  const handleDeleteTokens = () => {
+  const { loggedOut } = useAuth()
+  const handleLogOut = async () => {
     AuthService.logout()
-    loggedIn()
+    try {
+      await AuthService.logout()
+        .then(loggedOut())
+        .catch((error) => {
+          throw new Error(error)
+        })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const toggleDrawer = () => {
@@ -70,7 +78,7 @@ export const AlterFeedScreen: FC<AlterFeedScreenProps> = observer(function Alter
             <Button
               text="LogOut"
               textStyle={[AppStyles.ButtonText, { fontSize: 42, color: "#242038" }]}
-              onPress={handleDeleteTokens}
+              onPress={handleLogOut}
               style={[
                 [AppStyles.MainButton, { paddingHorizontal: spacing.xxl }],
                 {

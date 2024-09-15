@@ -6,20 +6,20 @@ import FontAwesome from "react-native-vector-icons/FontAwesome5"
 import { Button, Screen } from "app/components"
 import hashPassword from "app/utils/Crypto/hashPassword"
 import AuthService from "app/services/auth/AuthService"
-import { useAuth } from "app/services/auth/useAuth"
 import { AppStyles } from "app/theme/AppStyles"
+import { useAuth } from "app/services/auth/useAuth"
 
 const logo = require("../../assets/images/LogoTemp.png")
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen({ navigation }) {
-  const { loggedIn } = useAuth()
   const [errorMessage, setErrorMessage] = React.useState<string | undefined>(undefined)
   const [hasError, setHasError] = React.useState<boolean | undefined>(false)
   const [username, setUsername] = React.useState<string>("")
   const [password, setPassword] = React.useState<string>("")
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const { loggedIn } = useAuth()
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
@@ -35,35 +35,16 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen({
         password: hashedPassword,
       }
       try {
-        const response = await AuthService.login(userData)
-        if (response.error) {
-          console.log(response.error)
-          throw new Error(response.error)
-        }
+        await AuthService.login(userData)
+          .then(loggedIn())
+          .catch((error) => {
+            throw new Error(error)
+          })
         loggedIn()
       } catch (error: any) {
         setHasError(true)
         setErrorMessage(error.message)
       }
-    }
-  }
-  // ! debug only
-  const handleDebugLogIn = async () => {
-    const hashedPassword = hashPassword("arxidia")
-    const userData = {
-      username: "kolias",
-      password: hashedPassword,
-    }
-    try {
-      const response = await AuthService.login(userData)
-      if (response.error) {
-        console.log(response.error)
-        throw new Error(response.error)
-      }
-      loggedIn()
-    } catch (error: any) {
-      setHasError(true)
-      setErrorMessage(error.message)
     }
   }
 
@@ -102,13 +83,6 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen({
         textStyle={AppStyles.ButtonText}
         onPress={handleLogIn}
         style={AppStyles.MainButton}
-        pressedStyle={AppStyles.MainButton}
-      />
-      <Button
-        text="Debug Log In"
-        textStyle={AppStyles.ButtonText}
-        onPress={handleDebugLogIn}
-        style={[AppStyles.MainButton, { backgroundColor: "red" }]}
         pressedStyle={AppStyles.MainButton}
       />
       <Button

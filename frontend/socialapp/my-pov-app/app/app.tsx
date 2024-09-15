@@ -21,7 +21,7 @@ import "./utils/ignoreWarnings"
 import { useFonts } from "expo-font"
 import React from "react"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
-import * as Linking from "expo-linking"
+// import * as Linking from "expo-linking"
 import { useInitialRootStore } from "./models"
 import { AppNavigator, useNavigationPersistence } from "./navigators"
 import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
@@ -30,33 +30,31 @@ import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ViewStyle } from "react-native"
-import {AuthProvider} from "./services/auth/useAuth"
+import { AuthProvider } from "./services/auth/useAuth"
+import * as SplashScreen from "expo-splash-screen"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
-
-
-
 // Web linking configuration
-const prefix = Linking.createURL("/")
-const config = {
-  screens: {
-    Login: {
-      path: "",
-    },
-    Welcome: "welcome",
-    Demo: {
-      screens: {
-        DemoShowroom: {
-          path: "showroom/:queryIndex?/:itemIndex?",
-        },
-        DemoDebug: "debug",
-        DemoPodcastList: "podcast",
-        DemoCommunity: "community",
-      },
-    },
-  },
-}
+// const prefix = Linking.createURL("/")
+// const config = {
+//   screens: {
+//     Login: {
+//       path: "",
+//     },
+//     Welcome: "welcome",
+//     Demo: {
+//       screens: {
+//         DemoShowroom: {
+//           path: "showroom/:queryIndex?/:itemIndex?",
+//         },
+//         DemoDebug: "debug",
+//         DemoPodcastList: "podcast",
+//         DemoCommunity: "community",
+//       },
+//     },
+//   },
+// }
 
 interface AppProps {
   hideSplashScreen: () => Promise<boolean>
@@ -97,27 +95,25 @@ function App(props: AppProps) {
     return null
   }
 
-  const linking = {
-    prefixes: [prefix],
-    config,
-  }
+  // const linking = {
+  //   prefixes: [prefix],
+  //   config,
+  // }
 
   // otherwise, we're ready to render the app
   return (
     <AuthProvider>
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <ErrorBoundary catchErrors={Config.catchErrors}>
-        <GestureHandlerRootView style={$container}>
-          <AppNavigator
-            linking={linking}
-            initialState={initialNavigationState}
-            onStateChange={onNavigationStateChange}
-          />
-        </GestureHandlerRootView>
-      </ErrorBoundary>
-    </SafeAreaProvider>
+        <ErrorBoundary catchErrors={Config.catchErrors}>
+          <GestureHandlerRootView style={$container}>
+            <AppNavigator
+              initialState={initialNavigationState}
+              onStateChange={onNavigationStateChange}
+            />
+          </GestureHandlerRootView>
+        </ErrorBoundary>
+      </SafeAreaProvider>
     </AuthProvider>
-    
   )
 }
 

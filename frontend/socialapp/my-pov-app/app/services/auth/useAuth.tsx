@@ -1,13 +1,6 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  PropsWithChildren,
-} from "react"
+import React, { createContext, useContext, useState, PropsWithChildren } from "react"
 import { loadData } from "app/utils/storage/securestore"
-import AuthService from "./AuthService"
+import { useEffect } from "react"
 
 type AuthState = {
   isLoggedIn: boolean
@@ -16,12 +9,14 @@ type AuthState = {
 
 type AuthContextType = {
   loggedIn: () => any
+  loggedOut: () => any
 } & AuthState
 
 const AuthContext = createContext<AuthContextType>({
   isLoggedIn: false,
   token: null,
   loggedIn: () => new Promise(() => ({})),
+  loggedOut: () => new Promise(() => ({})),
 })
 
 export function useAuth() {
@@ -39,14 +34,23 @@ export function useAuth() {
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [token, setToken] = useState<string | null>(null)
 
+  useEffect(() => {
+    const initializeAuth = async () => {
+      await loadData("accessToken").then(setToken)
+    }
+    initializeAuth()
+  }, [])
+
   const loggedIn = async () => {
-    const refreshToken = await loadData("refreshToken")
-    setToken(refreshToken)
-    // need to check for refreshkeyexpiry
+    await loadData("refreshToken").then(setToken)
+    // !need to check for refreshkeyexpiry
+  }
+  const loggedOut = () => {
+    setToken(null)
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn: !!token, token, loggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn: !!token, token, loggedIn, loggedOut }}>
       {children}
     </AuthContext.Provider>
   )
