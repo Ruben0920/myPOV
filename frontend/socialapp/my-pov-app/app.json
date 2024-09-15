@@ -13,11 +13,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#191015"
     },
-    "extra": {
-      "eas": {
-        "projectId": "2fcabfc8-17cf-4c74-b366-f3d42b67a9cd"
-      }
-    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -71,18 +66,7 @@
           }
         }
       ],
-      [
-        "react-native-vision-camera",
-        {
-          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
-  
-          
-          "enableMicrophonePermission": true,
-          "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
-        }
-      ],
       "expo-font"
-      
     ],
     "experiments": {
       "tsconfigPaths": true
