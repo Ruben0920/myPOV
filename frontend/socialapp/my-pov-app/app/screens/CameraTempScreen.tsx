@@ -36,15 +36,25 @@ export const CameraTempScreen: FC<CameraTempScreenProps> = observer(function Cam
   //
 
   const TakePicture = async() =>{
+    
     camera.current?.takePhoto().then(setImage)
+    
+    
   }
-  
+
+
+
   const uplaod = async() =>{
-    console.log(image)
     
   const result = await fetch(`file://${image.path}`);
   
   const data = await result.blob(); 
+  
+
+  
+
+
+
 
 
   const formData = new FormData();
@@ -56,7 +66,6 @@ export const CameraTempScreen: FC<CameraTempScreenProps> = observer(function Cam
       type: 'image/jpeg', // Adjust the MIME type as necessary
       name: 'upload.jpg', // Provide a proper name for the uploaded file
     });
-    console.log(formData)
   
     try {
       console.log('Sending request to http://10.0.2.2:8000/matches/get_post_objects/');

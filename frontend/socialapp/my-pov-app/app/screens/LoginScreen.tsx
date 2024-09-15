@@ -6,13 +6,10 @@ import FontAwesome from "react-native-vector-icons/FontAwesome5"
 import { Button, Screen } from "app/components"
 import hashPassword from "app/utils/Crypto/hashPassword"
 import AuthService from "app/services/auth/AuthService"
-
+import { AppStyles } from "app/theme/AppStyles"
 import { useAuth } from "app/services/auth/useAuth"
 
-
-
-
-const welcomeFace = require("../../assets/images/welcome-face.png");
+const logo = require("../../assets/images/LogoTemp.png")
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
@@ -24,11 +21,11 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen({
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const { loggedIn } = useAuth()
 
-  const togglePasswordVisibility = () =>{
+  const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
   }
 
-  const handleLogIn = async() => {
+  const handleLogIn = async () => {
     if (username === "" || password === "") {
       setHasError(true)
     } else {
@@ -52,46 +49,34 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen({
   }
 
   return (
-    <View style={$container}>
-      <View style={$topContainer}>
-        <Image style={$welcomeLogo} source={welcomeFace} resizeMode="contain" />
-        <TextInput 
-        style={$input} 
-        placeholder="Username"
-        onChangeText={setUsername}
-         />
-        <View style={$passwordInputContainer}>
-          <TextInput
-            style={$passwordInput}
-            placeholder="Password"
-            secureTextEntry={!showPassword}
-            onChangeText={setPassword}
-          />
-          {errorMessage?<Text style={$errorText}>{"Invalid credentials"}</Text> : null}
-          <TouchableOpacity onPress={togglePasswordVisibility} style={$showHideButton}>
-            <FontAwesome name={showPassword ? "eye-slash" : "eye"} size={24} color={"rgba(25, 16, 21, 0.5)"} />
-          </TouchableOpacity>
-        </View>
-        
-          <Button  
-          text="Log In" 
-          onPress={handleLogIn} 
-          style={$loginButton}
-          />
-        
-        
-
-        <View >
-          <Button 
-          text="Create New Account" 
-          onPress={() => navigation.navigate("SignUp")} 
-          style={$RegisterButton}
-          />
-        </View>
+    <Screen
+      preset="fixed"
+      contentContainerStyle={AppStyles.container}
+      safeAreaEdges={["top", "bottom"]}
+    >
+      <Image style={AppStyles.welcomeLogo} source={logo} resizeMode="contain" />
+      <View style={AppStyles.InputContainer}>
+        <TextInput
+          style={AppStyles.input}
+          placeholder="Username"
+          placeholderTextColor={"#CAC4CE"}
+          onChangeText={setUsername}
+        />
       </View>
-    </View>
-  );
-});
+
+      <View style={AppStyles.InputContainer}>
+        <TextInput
+          style={AppStyles.input}
+          placeholder="Password"
+          placeholderTextColor={"#CAC4CE"}
+          secureTextEntry={!showPassword}
+          onChangeText={setPassword}
+        />
+        {hasError ? <Text style={AppStyles.ErrorText}>{errorMessage}</Text> : null}
+        <TouchableOpacity onPress={togglePasswordVisibility} style={AppStyles.showHideButton}>
+          <FontAwesome name={showPassword ? "eye-slash" : "eye"} size={38} color={"#CAC4CE"} />
+        </TouchableOpacity>
+      </View>
 
       <Button
         text="Log In"
