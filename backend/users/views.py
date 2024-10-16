@@ -39,8 +39,8 @@ class LoginView(APIView):
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
-class FogotPasswordView(APIView):
-    def check_email_or_phone(self, request, *args, **kwargs):
+class ForgotPasswordView(APIView):
+    def post(self, request, *args, **kwargs):
         email = request.data.get('email', None)
         # p_number = request.data.get('p_number', None)
         
@@ -49,6 +49,8 @@ class FogotPasswordView(APIView):
         
         else:
             send_email_otp(email)
+            return Response({"succcess": "Email sent"}, status=status.HTTP_200_OK)
+        
         
         #if p_number is not None: 
             #this needs to be implemented
