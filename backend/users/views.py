@@ -42,12 +42,12 @@ class LoginView(APIView):
 class FogotPasswordView(APIView):
     def check_email_or_phone(self, request, *args, **kwargs):
         email = request.data.get('email', None)
-        p_number = request.data.get('p_number', None)
+        # p_number = request.data.get('p_number', None)
         
-        if email and p_number is None: 
+        if email is None: 
             return Response({"error": "No email or password provided"}, status=status.HTTP_400_BAD_REQUEST)
         
-        if email is not None:
+        else:
             send_email_otp(email)
         
         #if p_number is not None: 
