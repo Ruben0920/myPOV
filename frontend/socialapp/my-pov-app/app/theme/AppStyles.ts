@@ -1,20 +1,18 @@
-import { ViewStyle, ImageStyle, TextStyle, StyleSheet } from "react-native"
+import { ViewStyle, ImageStyle, TextStyle, StyleSheet, Dimensions } from "react-native"
 import { spacing } from "."
+import { colors } from "app/theme/colors"
 
 const textStyles = {
   default: {
-    color: "#CAC4CE",
-    fontSize: 50,
-    lineHeight: 56,
+    color: colors.text,
+    fontSize: 24,
+    lineHeight: 30,
     margin: 2,
-    alignSelf: "center",
   } as TextStyle,
 }
 
 export const AppStyles = StyleSheet.create({
   welcomeLogo: {
-    height: 550,
-    width: 750,
     alignSelf: "center",
   } as ImageStyle,
 
@@ -23,15 +21,15 @@ export const AppStyles = StyleSheet.create({
     width: 500,
     borderWidth: 4,
     borderRadius: 375,
-    borderColor: "#CAC4CE",
+    borderColor: colors.border,
   } as ImageStyle,
 
   container: {
-    backgroundColor: "#8D86C9",
+    backgroundColor: colors.background, //#8D86C9
     flexDirection: "column",
     flex: 1,
-    paddingHorizontal: 120,
-    paddingVertical: 40,
+    paddingHorizontal: 25,
+    paddingVertical: 25,
   } as ViewStyle,
 
   text: {
@@ -40,12 +38,12 @@ export const AppStyles = StyleSheet.create({
 
   InputContainer: {
     flexDirection: "row",
-    alignItems: "center",
     borderWidth: 2,
-    borderRadius: 35,
-    borderColor: "#CAC4CE",
-    backgroundColor: "#725AC1",
-    padding: spacing.md,
+    backgroundColor: colors.background,
+    borderTopColor: colors.background,
+    borderLeftColor: colors.background,
+    borderRightColor: colors.background,
+    borderBottomColor: colors.border,
     marginVertical: spacing.sm,
   } as ViewStyle,
 
@@ -54,21 +52,19 @@ export const AppStyles = StyleSheet.create({
   } as TextStyle,
 
   showHideButton: {
-    position: "absolute",
-    left: 750,
+    alignSelf: "flex-end",
     padding: spacing.sm,
     backgroundColor: "transparent",
   } as ViewStyle,
 
   MainButton: {
     alignSelf: "stretch",
-    paddingHorizontal: spacing.xxxl,
     height: "auto",
-    borderWidth: 2,
-    borderRadius: 60,
-    borderColor: "#242038",
-    marginTop: spacing.md,
-    backgroundColor: "#242038",
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: colors.text,
+    marginTop: spacing.xxs,
+    backgroundColor: colors.border,
   } as ViewStyle,
 
   SecondaryButton: {
@@ -82,6 +78,16 @@ export const AppStyles = StyleSheet.create({
     backgroundColor: "transparent",
   } as ViewStyle,
 
+  CustomButton: {
+    alignSelf: "stretch",
+    height: "auto",
+    borderWidth: 2,
+    borderRadius: 30,
+    borderColor: colors.text,
+    marginTop: spacing.xxs,
+    backgroundColor: colors.border,
+  } as ViewStyle,
+
   ButtonText: {
     ...textStyles.default,
   } as TextStyle,
@@ -93,18 +99,19 @@ export const AppStyles = StyleSheet.create({
 
   PickerContainer: {
     borderWidth: 2,
-    borderRadius: 35,
-    borderColor: "#CAC4CE",
-    backgroundColor: "#725AC1",
-    padding: spacing.md,
-    marginVertical: spacing.sm,
+    backgroundColor: colors.background,
+    borderTopColor: colors.background,
+    borderLeftColor: colors.background,
+    borderRightColor: colors.background,
+    borderBottomColor: colors.border,
+    marginBottom: 25,
   } as ViewStyle,
 
   PickerItem: {
-    color: "#CAC4CE",
-    fontSize: 38,
-    lineHeight: 54,
-    marginBottom: 20,
+    color: colors.text,
+    fontSize: 24,
+    lineHeight: 30,
+    marginBottom: 5,
     alignSelf: "flex-start",
   } as TextStyle,
 
@@ -173,7 +180,7 @@ export const AppStyles = StyleSheet.create({
   } as ViewStyle,
 
   Drawer: {
-    backgroundColor: "#8D86C9",
+    backgroundColor: colors.border,
     flex: 1,
     paddingHorizontal: 12,
     paddingVertical: 4,
