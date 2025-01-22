@@ -8,7 +8,6 @@ import hashPassword from "app/utils/Crypto/hashPassword"
 import AuthService from "app/services/auth/AuthService"
 import { useAuth } from "app/services/auth/useAuth"
 import { AppStyles } from "app/theme/AppStyles"
-import { Picker } from "@react-native-picker/picker"
 import formValidation from "app/utils/formValidation"
 import { colors } from "app/theme/colors"
 
