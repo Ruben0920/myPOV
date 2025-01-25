@@ -30,8 +30,12 @@ import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ViewStyle } from "react-native"
+import { AuthProvider } from "./services/auth/useAuth"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
+
+
+
 
 // Web linking configuration
 const prefix = Linking.createURL("/")
@@ -100,7 +104,8 @@ function App(props: AppProps) {
 
   // otherwise, we're ready to render the app
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+    <AuthProvider>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <GestureHandlerRootView style={$container}>
           <AppNavigator
@@ -111,6 +116,8 @@ function App(props: AppProps) {
         </GestureHandlerRootView>
       </ErrorBoundary>
     </SafeAreaProvider>
+    </AuthProvider>
+    
   )
 }
 

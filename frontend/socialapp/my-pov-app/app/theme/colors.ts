@@ -33,6 +33,10 @@ const palette = {
   angry100: "#F2D6CD",
   angry500: "#C03403",
 
+  black: "#000000",
+  primary: "#5400CB",
+  secondary: "#DCCAFF",
+
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
 } as const
@@ -51,7 +55,7 @@ export const colors = {
   /**
    * The default text color in many components.
    */
-  text: palette.neutral800,
+  text: palette.black,
   /**
    * Secondary text information.
    */
@@ -59,11 +63,11 @@ export const colors = {
   /**
    * The default color of the screen background.
    */
-  background: palette.neutral200,
+  background: palette.primary,
   /**
    * The default border color.
    */
-  border: palette.neutral400,
+  border: palette.secondary,
   /**
    * The main tinting color.
    */
