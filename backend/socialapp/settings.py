@@ -10,132 +10,238 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os # Ensure 'os' is imported
 from pathlib import Path
+from datetime import timedelta
+# Optional: For loading .env file in development if not handled by your run environment
+# from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Optional: Load .env file from BASE_DIR (myPOV/backend/.env)
+# Ensure 'python-dotenv' is in your requirements.txt if you use this.
+# load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nh=@+34mxky*x%s8jn+w-%e!k!n-9l2=t_m29s9u1^cd(z*#_s'
+# Loaded from environment variable, with a fallback for safety (though fallback should not be used in production)
+SECRET_KEY = os.getenv('SECRET_KEY', 'your_fallback_secret_key_if_env_var_is_not_set_RANDOMIZE_THIS')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Debug mode, loaded from environment variable. Defaults to False if not set.
+DEBUG = os.getenv('DEBUG', 'False').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '10.0.2.2',]
+# Allowed Hosts, loaded from environment variable.
+ALLOWED_HOSTS_STRING = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1')
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_STRING.split(',') if host.strip()] if ALLOWED_HOSTS_STRING else []
+# If DEBUG is True and ALLOWED_HOSTS is empty, Django defaults to ['localhost', '127.0.0.1']
+# For production, ensure ALLOWED_HOSTS is correctly set with your domain(s).
+
+
+# Pusher Settings
+PUSHER_APP_ID = '2001939'
+PUSHER_KEY = 'f879e8943ce0bfe78232'
+PUSHER_SECRET = 'bcd6dfb759598cda9202'
+PUSHER_CLUSTER = 'eu'
+PUSHER_SSL = True # Recommended
+
+# Gemini API Key
+GEMINI_API_KEY = 'AIzaSyDjxQtcHkh_k2Wc9DcSWB7aPYfoMWF7ES8'
 
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',  # Add this line
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'matches',
-    'posts',
-    'chat',
-    'users'
+INSTALLED_APPS = [ #
+    'django.contrib.admin',  #
+    'django.contrib.auth', #
+    'django.contrib.contenttypes', #
+    'django.contrib.sessions', #
+    'django.contrib.messages', #
+    'django.contrib.staticfiles', #
+    'rest_framework', #
+    'matches', #
+    'posts', #
+    'chat', #
+    'users', #
+    'rest_framework_simplejwt', #
 ]
 
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+MIDDLEWARE = [ #
+    'django.middleware.security.SecurityMiddleware', #
+    'django.contrib.sessions.middleware.SessionMiddleware', #
+    'django.middleware.common.CommonMiddleware', #
+    'django.middleware.csrf.CsrfViewMiddleware', #
+    'django.contrib.auth.middleware.AuthenticationMiddleware', #
+    'django.contrib.messages.middleware.MessageMiddleware', #
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', #
 ]
 
-ROOT_URLCONF = 'socialapp.urls'
+ROOT_URLCONF = 'socialapp.urls' #
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+TEMPLATES = [ #
+    { #
+        'BACKEND': 'django.template.backends.django.DjangoTemplates', #
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # Example if you have project-level templates
+        'APP_DIRS': True, #
+        'OPTIONS': { #
+            'context_processors': [ #
+                'django.template.context_processors.debug', #
+                'django.template.context_processors.request', #
+                'django.contrib.auth.context_processors.auth', #
+                'django.contrib.messages.context_processors.messages', #
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'socialapp.wsgi.application'
+WSGI_APPLICATION = 'socialapp.wsgi.application' #
 
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'my_pov',
-        'USER': 'rg185298',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',  
-        'PORT': '5432',  
+# Default to SQLite if DB_ENGINE is not set (for easy local dev)
+DB_ENGINE = os.getenv('DB_ENGINE', 'django.db.backends.sqlite3')
+
+if DB_ENGINE == 'django.db.backends.postgresql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME', 'mypov_db'),
+            'USER': os.getenv('DB_USER', 'mypov_user'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'your_db_password'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+        }
     }
-}
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+else: # Default to SQLite
+    DATABASES = { #
+        'default': { #
+            'ENGINE': 'django.db.backends.sqlite3', #
+            'NAME': BASE_DIR / os.getenv('DB_NAME_SQLITE', 'db.sqlite3'), #
+        }
+    }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+AUTH_PASSWORD_VALIDATORS = [ #
+    { #
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', #
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    { #
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', #
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    { #
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', #
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    { #
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', #
     },
 ]
+
+# Add this line to specify your custom user model
+AUTH_USER_MODEL = 'users.CustomUser' #
+
+#JWT TOKEN SETTINGS
+
+REST_FRAMEWORK = { #
+    'DEFAULT_AUTHENTICATION_CLASSES': ( #
+        'rest_framework_simplejwt.authentication.JWTAuthentication', #
+    ),
+    # Add default pagination, permissions, etc. as needed
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 10,
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    # ]
+}
+
+SIMPLE_JWT = { #
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=os.getenv('JWT_ACCESS_TOKEN_LIFETIME_MINUTES', 5)), #
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=os.getenv('JWT_REFRESH_TOKEN_LIFETIME_DAYS', 1)), #
+    'ROTATE_REFRESH_TOKENS': False, #
+    'BLACKLIST_AFTER_ROTATION': True, #
+    'ALGORITHM': 'HS256', #
+    'SIGNING_KEY': SECRET_KEY, # Uses the SECRET_KEY defined above
+    'VERIFYING_KEY': None, #
+    'AUDIENCE': None, #
+    'ISSUER': None, #
+    'AUTH_HEADER_TYPES': ('Bearer',), #
+    'USER_ID_FIELD': 'id', # Matches CustomUser's primary key
+    'USER_ID_CLAIM': 'id', #
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',), #
+    'TOKEN_TYPE_CLAIM': 'token_type', #
+    'JTI_CLAIM': 'jti', #
+}
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-us' #
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC' #
 
-USE_I18N = True
+USE_I18N = True #
 
-USE_TZ = True
+USE_TZ = True #
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'static/' #
+# STATIC_ROOT = BASE_DIR / 'staticfiles' # For production, when you run collectstatic
+# STATICFILES_DIRS = [BASE_DIR / 'static'] # If you have project-level static files not in apps
+
+# Media files (User Uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' #
+
+# Email Configuration (Example for console backend during development)
+# For production, configure SMTP settings, possibly via environment variables
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    # EMAIL_HOST = os.getenv('EMAIL_HOST')
+    # EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+    # EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() == 'true'
+    # EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    # EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    # DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
+
+# Logging Configuration (Basic example, expand as needed)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO', # Change to 'DEBUG' for more verbosity
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+    },
+}

@@ -1,6 +1,11 @@
-from django.urls import path
-from .views import ImageUploadView
+# myPOV/backend/posts/urls.py
+
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import PostViewSet
+router = DefaultRouter()
+router.register(r'posts', PostViewSet, basename='post')
 
 urlpatterns = [
-    path('get_post_objects/', ImageUploadView.as_view(), name='get_post_objects'),
+    path('', include(router.urls)),
 ]
